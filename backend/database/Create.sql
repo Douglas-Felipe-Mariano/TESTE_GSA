@@ -15,7 +15,7 @@ CREATE TABLE TB_ALUNO (AlunoId         INT            PRIMARY KEY   AUTO_INCREME
                       ,DataNascimento  DATE           NOT NULL
                       ,Endereco        VARCHAR(255)   NULL
                       ,DataCadastro    DATETIME       NOT NULL      DEFAULT CURRENT_TIMESTAMP
-                      ,Ativo           TINYINT (1)    NOT NULL      DEFAULT 1
+                      ,Ativo           BIT            NOT NULL      DEFAULT 1
                       ,CONSTRAINT FK_TURMA_ALUNO FOREIGN KEY (TurmaId) REFERENCES TB_TURMA(TurmaId)
                       );
 

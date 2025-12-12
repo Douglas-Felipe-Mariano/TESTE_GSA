@@ -4,16 +4,23 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TB_ALUNO")
 public class Aluno {
 
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //Define que o ID será gerado automaticamente pelo banco de dados
     @Column(name = "AlunoId", nullable = false)
     private Integer id;
 
+    @ManyToOne //Define que muitos alunos podem ter uma turma
     @JoinColumn(name = "TurmaId", nullable = false)
     private Turma turma;
 
@@ -26,11 +33,11 @@ public class Aluno {
     @Column(name = "Endereco", nullable = true, length = 255)
     private String endereco;
 
-    @Column(name = "DataCadastro", nullable = false)
+    @Column(name = "DataCadastro", nullable = false, updatable = false)
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
-    @Column(name = "Ativo", nullable = false, length = 1)
-    private Integer ativo = 1;
+    @Column(name = "Ativo", nullable = false)
+    private boolean ativo = true;
 
 
     public Integer getId() {
@@ -81,14 +88,18 @@ public class Aluno {
         this.dataCadastro = dataCadastro;
     }
 
-    public Integer getAtivo() {
+
+    public boolean isAtivo() {
         return this.ativo;
     }
 
-    public void setAtivo(Integer ativo) {
-        this.ativo = ativo;
+    public boolean getAtivo() {
+        return this.ativo;
     }
 
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
 
 
 }

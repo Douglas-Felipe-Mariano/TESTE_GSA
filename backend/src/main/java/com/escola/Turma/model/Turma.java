@@ -2,12 +2,17 @@ package com.escola.Turma.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TB_TURMA")
 public class Turma {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //Define que o ID será gerado automaticamente pelo banco de dados
     @Column(name = "TurmaId", nullable = false)
     private Integer id;
 
