@@ -1,13 +1,17 @@
 package com.escola.Turma.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.escola.Turma.dto.AlunoRequestDTO;
+import com.escola.Turma.dto.AlunoResponseDTO;
 import com.escola.Turma.model.Aluno;
+import com.escola.Turma.model.Turma;
 import com.escola.Turma.repository.AlunoRepository;
+import com.escola.Turma.repository.TurmaRepository;
 
 @Service
 public class AlunoService {
@@ -15,53 +19,81 @@ public class AlunoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    public Aluno cadastrarAluno(Aluno aluno) {
-        List<Aluno> novoAluno = alunoRepository.findByNomeAndAtivo(aluno.getNome(), true);
+    @Autowired
+    private TurmaRepository TurmaRepository;    
 
-        if (novoAluno.isEmpty()){
-            throw new RuntimeException("O nome do Aluno é obrigatório.");
+    public AlunoResponseDTO cadastrarAluno(AlunoRequestDTO alunoDTO) {
+
+        if (alunoDTO.nome() == null || alunoDTO.nome().isEmpty()) {
+            throw new RuntimeException("O nome do alunoDTO é obrigatório.");
         }
 
-        if((novoAluno.get(0).getDataNascimento() == null) || (novoAluno.get(0).getDataNascimento().isAfter(LocalDateTime.now())) || (novoAluno.get(0).getDataNascimento().isEqual(LocalDateTime.now()))){
-            throw new RuntimeException("Data de Nascimento inválida.");
+        if((alunoDTO.dataNascimento() == null) || (alunoDTO.dataNascimento().isAfter(LocalDate.now()))){
+            throw new RuntimeException("Data de Nascimento inválida."); 
         }
-        
-        return alunoRepository.save(aluno);
+
+        if(alunoDTO.turmaId() == null){
+            throw new RuntimeException("Turma inválida."); 
+        }
+
+        Turma turma = TurmaRepository.findById(alunoDTO.turmaId())
+                        .orElseThrow(() -> new RuntimeException("Turma não encontrada."));
+
+        Aluno aluno = alunoDTO.toEntity(turma);
+
+        alunoRepository.save(aluno);
+
+        return AlunoResponseDTO.fromEntity(aluno);
     }
 
     public List<Aluno> listarAlunosPorNome(String nome) {
         return alunoRepository.findByNomeAndAtivo(nome, true);
     }
 
-    public List<Aluno> listarAlunosAtivos() {
-        List<Aluno> alunosAtivos = alunoRepository.findByAtivo(true);
-        return alunosAtivos;
+    public List<AlunoResponseDTO> listarAlunosAtivos() {
+        return alunoRepository.findByAtivo(true)
+                              .stream()
+                              .map(AlunoResponseDTO::fromEntity)
+                              .collect(java.util.stream.Collectors.toList());
     }
 
-    public List<Aluno> listarTodosAlunos() {
-        List<Aluno> alunos = alunoRepository.findAll();
-
-        return alunos;
+    public List<AlunoResponseDTO> listarTodosAlunos() {
+        return alunoRepository.findAll()
+                              .stream()
+                              .map(AlunoResponseDTO::fromEntity)
+                              .collect(java.util.stream.Collectors.toList());
     }
 
-    public Aluno atualizarAluno(Aluno detalheAluno, Integer id) {
+    public AlunoResponseDTO atualizarAluno(AlunoRequestDTO detalheAluno, Integer id) {
         Aluno alunoExistente = alunoRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
 
 
-        if (detalheAluno.getNome() != null){
-            alunoExistente.setNome(detalheAluno.getNome());
+        if (detalheAluno.nome() != null){
+            alunoExistente.setNome(detalheAluno.nome());
         }                                            
 
-        if (detalheAluno.getDataNascimento() != null){
-            alunoExistente.setDataNascimento(detalheAluno.getDataNascimento());
+        if (detalheAluno.dataNascimento() != null){
+            if (detalheAluno.dataNascimento().isAfter(LocalDate.now())){
+                throw new RuntimeException("Data de Nascimento inválida."); 
+            }   
+            alunoExistente.setDataNascimento(detalheAluno.dataNascimento());
         }
 
-        if (detalheAluno.getEndereco() != null){
-            alunoExistente.setEndereco(detalheAluno.getEndereco());
+        if (detalheAluno.endereco() != null){
+            alunoExistente.setEndereco(detalheAluno.endereco());
         }
 
-        return alunoRepository.save(alunoExistente);
+        if (detalheAluno.turmaId() != null){
+            Turma turma = TurmaRepository.findById(detalheAluno.turmaId())
+                            .orElseThrow(() -> new RuntimeException("Turma não encontrada."));
+
+            alunoExistente.setTurma(turma);
+        }
+
+        alunoRepository.save(alunoExistente);
+
+        return AlunoResponseDTO.fromEntity(alunoExistente);
     }
 
     public void deletarAluno(Integer id) {

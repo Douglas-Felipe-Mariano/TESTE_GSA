@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.escola.Turma.model.Aluno;
+import com.escola.Turma.dto.AlunoRequestDTO;
+import com.escola.Turma.dto.AlunoResponseDTO;
 import com.escola.Turma.service.AlunoService;
 
 @RestController
@@ -24,34 +25,34 @@ public class AlunoController {
     AlunoService alunoService;
 
     @PostMapping
-    public ResponseEntity<Aluno> cadastrarAluno(Aluno aluno) {
-        Aluno novoAluno = alunoService.cadastrarAluno(aluno);
+    public ResponseEntity<AlunoResponseDTO> cadastrarAluno(AlunoRequestDTO aluno) {
+        AlunoResponseDTO novoAluno = alunoService.cadastrarAluno(aluno);
 
         return ResponseEntity.ok(novoAluno);
     }
 
     @GetMapping("/ativos")
-    public ResponseEntity<List<Aluno>> listarAlunosAtivos() {
-        List<Aluno> alunosAtivos = alunoService.listarAlunosAtivos();
+    public ResponseEntity<List<AlunoResponseDTO>> listarAlunosAtivos() {
+        List<AlunoResponseDTO> alunosAtivos = alunoService.listarAlunosAtivos();
 
         return ResponseEntity.ok(alunosAtivos);
     }
 
     @GetMapping
-    public ResponseEntity<List<Aluno>> listarTodosAlunos() {
-        List<Aluno> alunos = alunoService.listarTodosAlunos();
+    public ResponseEntity<List<AlunoResponseDTO>> listarTodosAlunos() {
+        List<AlunoResponseDTO> alunos = alunoService.listarTodosAlunos();
 
         return ResponseEntity.ok(alunos);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Aluno> atualizarAluno(@PathVariable Integer id, @RequestBody Aluno detalheAluno) {
-        Aluno alunoAtualizado = alunoService.atualizarAluno(detalheAluno, id);
+    public ResponseEntity<AlunoResponseDTO> atualizarAluno(@PathVariable Integer id, @RequestBody AlunoRequestDTO detalheAluno) {
+        AlunoResponseDTO alunoAtualizado = alunoService.atualizarAluno(detalheAluno, id);
 
         return ResponseEntity.ok(alunoAtualizado);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarAluno(@PathVariable Integer id) {
         alunoService.deletarAluno(id);
 
