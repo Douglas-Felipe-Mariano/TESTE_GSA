@@ -1,6 +1,6 @@
 package com.escola.Turma.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,13 +28,13 @@ public class Aluno {
     private String nome;
 
     @Column(name = "DataNascimento", nullable = false)
-    private LocalDateTime dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column(name = "Endereco", nullable = true, length = 255)
     private String endereco;
 
     @Column(name = "DataCadastro", nullable = false, updatable = false)
-    private LocalDateTime dataCadastro = LocalDateTime.now();
+    private LocalDate dataCadastro = LocalDate.now();
 
     @Column(name = "Ativo", nullable = false)
     private boolean ativo = true;
@@ -64,11 +64,11 @@ public class Aluno {
         this.nome = nome;
     }
 
-    public LocalDateTime getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return this.dataNascimento;
     }
 
-    public void setDataNascimento(LocalDateTime dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 
@@ -80,11 +80,11 @@ public class Aluno {
         this.endereco = endereco;
     }
 
-    public LocalDateTime getDataCadastro() {
+    public LocalDate getDataCadastro() {
         return this.dataCadastro;
     }
 
-    public void setDataCadastro(LocalDateTime dataCadastro) {
+    public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 

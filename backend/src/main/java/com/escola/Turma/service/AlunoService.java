@@ -1,6 +1,6 @@
 package com.escola.Turma.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +16,15 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     public Aluno cadastrarAluno(Aluno aluno) {
-        List<Aluno> novoAluno = alunoRepository.findByNomeAndAtivo(aluno.getNome(), true);
-
-        if (novoAluno.isEmpty()){
+    
+        if (aluno.getNome() == null || aluno.getNome().isEmpty()) {
             throw new RuntimeException("O nome do Aluno é obrigatório.");
         }
 
-        if((novoAluno.get(0).getDataNascimento() == null) || (novoAluno.get(0).getDataNascimento().isAfter(LocalDateTime.now())) || (novoAluno.get(0).getDataNascimento().isEqual(LocalDateTime.now()))){
-            throw new RuntimeException("Data de Nascimento inválida.");
+        if((aluno.getDataNascimento() == null) || (aluno.getDataNascimento().isAfter(LocalDate.now()))){
+            throw new RuntimeException("Data de Nascimento inválida."); 
         }
-        
+
         return alunoRepository.save(aluno);
     }
 
@@ -54,6 +53,9 @@ public class AlunoService {
         }                                            
 
         if (detalheAluno.getDataNascimento() != null){
+            if (detalheAluno.getDataNascimento().isAfter(LocalDate.now())){
+                throw new RuntimeException("Data de Nascimento inválida."); 
+            }   
             alunoExistente.setDataNascimento(detalheAluno.getDataNascimento());
         }
 
