@@ -1,0 +1,17 @@
+.lista-container { 
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.status-ativo {
+    color: var(--success-color);
+    
+}
