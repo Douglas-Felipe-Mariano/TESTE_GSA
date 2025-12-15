@@ -1,0 +1,142 @@
+/* 1. O Fundo da tela (Overlay) */
+/* Este fica escuro e transparente para focar a atenção no modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* Preto com 60% de opacidade */
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+    z-index: 1000; /* Garante que fica acima de tudo */
+    backdrop-filter: blur(2px); /* Opcional: dá um leve desfoque no fundo */
+}
+
+/* 2. A Caixa do Modal */
+/* Esta precisa ser Branca e Sólida */
+.modal-container {
+    background-color: #ffffff; /* FUNDO BRANCO SÓLIDO É ESSENCIAL */
+    width: 100%;
+    max-width: 500px; /* Largura máxima para não ficar gigante */
+    padding: 24px;
+    border-radius: 8px; /* Cantos arredondados */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Sombra suave para dar relevo */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Espaço entre os elementos internos */
+}
+
+/* 3. Cabeçalho (Título e Botão Fechar) */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.btn-close:hover {
+    color: #7e1e1e;
+}
+
+/* 4. Corpo do Formulário */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+}
+
+/* Inputs e Selects com visual moderno */
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%; /* Garante que ocupem a largura disponível */
+    box-sizing: border-box; /* Garante que o padding não aumente a largura */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #007bff;
+}
+
+/* Linha com dois campos (Data e Turma) */
+.form-row {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.form-group.half-width {
+    flex: 1; /* Faz com que ambos ocupem o mesmo espaço */
+}
+
+/* 5. Rodapé (Botões de Ação) */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; /* Alinha à direita */
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #333;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-cancel:hover {
+    background-color: #e2e6ea;
+}
+
+.btn-save {
+    padding: 10px 20px;
+    background-color: #28a745;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}

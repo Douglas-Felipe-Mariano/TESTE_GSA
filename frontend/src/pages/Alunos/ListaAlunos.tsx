@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { IAluno } from '../../types/IAluno';
 import { MOCK_ALUNOS, MOCK_TURMAS } from '../../services/mockData';
+import { ModalNovoAluno } from '../../components/ModalNovoAluno';
 
 import './ListaAlunos.css';
 
-export const ListaAlunos = () => {
+export const ListaAlunos: React.FC = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleOpenModal = () => { 
+        setIsModalOpen(true);
+    }
+    
+    const handleCloseModal = () => { 
+        setIsModalOpen(false);
+    }
+
+    
+
     const [alunosOriginais, setAlunosOriginais] = useState<IAluno[]>([]);
 
     const [alunosExibidos, setAlunosExibidos] = useState<IAluno[]>([]);
@@ -53,12 +66,12 @@ export const ListaAlunos = () => {
             
             <div className="header-actions">
                 <h2>Lista de Alunos</h2>
-                <button className="btn btn-primary">
+                <button onClick={handleOpenModal} className="btn btn-primary">
                     + Novo Aluno
                 </button>
             </div>
 
-            {/* ÁREA DE FILTROS */}
+            
             <div className="filtros-container">
                 <div className="filtro-group">
                     <label>Nome do Aluno</label>
@@ -150,6 +163,12 @@ export const ListaAlunos = () => {
                     )}
                 </tbody>
             </table>
+
+            <ModalNovoAluno 
+                isOpen={isModalOpen} 
+                onClose={handleCloseModal} 
+            />
+
         </div>
     );
 };
