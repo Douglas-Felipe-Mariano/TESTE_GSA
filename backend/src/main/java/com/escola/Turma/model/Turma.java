@@ -13,7 +13,7 @@ public class Turma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Define que o ID será gerado automaticamente pelo banco de dados
-    @Column(name = "TurmaId", nullable = false)
+    @Column(name = "Turma_id", nullable = false)
     private Integer id;
 
     @Column(name = "Descricao", nullable = false, length = 255, unique = true)

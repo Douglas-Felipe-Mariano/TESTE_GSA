@@ -3,7 +3,6 @@ package com.escola.Turma.dto;
 import java.time.LocalDate;
 
 import com.escola.Turma.model.Aluno;
-import com.escola.Turma.model.Turma;
 
 public record AlunoResponseDTO(
     Integer id,

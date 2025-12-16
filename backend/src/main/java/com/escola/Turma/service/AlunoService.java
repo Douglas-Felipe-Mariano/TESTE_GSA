@@ -69,7 +69,7 @@ public class AlunoService {
                                               .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
 
 
-        if (detalheAluno.nome() != null){
+        if (! detalheAluno.nome().isEmpty()){
             alunoExistente.setNome(detalheAluno.nome());
         }                                            
 

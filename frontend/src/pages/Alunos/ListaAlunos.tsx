@@ -4,62 +4,84 @@ import { MOCK_ALUNOS, MOCK_TURMAS } from '../../services/mockData';
 import { ModalNovoAluno } from '../../components/ModalNovoAluno';
 
 import './ListaAlunos.css';
+import { AlunoResponseDTO, TurmaDTO, getAlunos, getTurmas } from '../../services/api';
+import { get } from 'http';
+import { getTTFB } from 'web-vitals';
 
 export const ListaAlunos: React.FC = () => {
+
+    // Gerencia o modal, inicando a pagina com ele fechado
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // Listas populadas pela api
+    const [alunos, setAlunos] = useState<AlunoResponseDTO[]>([]);
+    const [turmas, setTurmas] = useState<TurmaDTO[]>([]);
+
+    // Filtros
+    const [filtroNome, setFiltroNome] = useState("");
+    const [filtroTurma, setFiltroTurma] = useState("");
+    const [filtroStatus, setFiltroStatus] = useState("");   
+
+    // função de busca dos dados na api
+    const carregarDados = async () => {
+        try{
+            const [responseAlunos, responseTurmas] = await Promise.all([
+                getAlunos(),
+                getTurmas()
+            ]);
+
+            setAlunos(responseAlunos.data);
+            setTurmas(responseTurmas.data);
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        }
+    };
+
+    // Garante que os dados sejam carregados assim que a pagina é aberta
+    useEffect (() => {
+        carregarDados();
+    }, []);
+
+    const alunosFiltrados = alunos.filter((aluno) => {
+        // Filtro por nome
+        const nomeMatch = aluno.nome.toLowerCase().includes(filtroNome.toLowerCase());
+
+        // Filtro por turma
+        const turmaMatch = filtroTurma === "" || String(aluno.turmaId) === filtroTurma;
+
+        // Filtro por Status
+        const statusMatch = filtroStatus === "" || String(aluno.ativo) === filtroStatus;
+
+        return nomeMatch && turmaMatch && statusMatch;
+    })
+
+    const limparFiltros = () =>{
+        setFiltroNome("");
+        setFiltroStatus("");
+        setFiltroTurma("");
+    }
+
+    // Método para buscar o nome da turma, tendo em vista que o DTO de AlunoResponse do backend só retorna o id da turma, sem nome
+    const getNomeTurma = (id: number) => {
+        const turmaencontrada = turmas.find(t => t.id === id);
+        return turmaencontrada ? turmaencontrada.descricao : 'Turma não Encontrada';
+    }
+
+    // Função apra abrir o modal
     const handleOpenModal = () => { 
         setIsModalOpen(true);
     }
-    
+
+    // Função para fechar o modal
     const handleCloseModal = () => { 
         setIsModalOpen(false);
     }
 
-    
-
-    const [alunosOriginais, setAlunosOriginais] = useState<IAluno[]>([]);
-
-    const [alunosExibidos, setAlunosExibidos] = useState<IAluno[]>([]);
-
-    const [buscaNome, setBuscaNome] = useState<string>('');
-    const [buscaTurma, setBuscaTurma] = useState<string>('');
-    const [buscaStatus, setBuscaStatus] = useState<string>('todos');
-
-    useEffect(() =>{
-        setAlunosOriginais(MOCK_ALUNOS);
-        setAlunosExibidos(MOCK_ALUNOS);
-    }, []);
-
-    useEffect(() => {
-        let resultado = alunosOriginais;
-
-        if (buscaNome) {
-            resultado = resultado.filter(aluno =>
-                aluno.nome.toLowerCase().includes(buscaNome.toLowerCase())
-            );
-        }
-
-        if (buscaTurma) {
-            resultado = resultado.filter(aluno =>
-                aluno.nomeTurma.toLowerCase().includes(buscaTurma.toLowerCase())
-            );
-        }
-
-        if (buscaStatus !== 'todos') {
-            const isAtivo = buscaStatus === 'ativo';
-            resultado = resultado.filter(aluno => aluno.ativo === isAtivo);
-        }
-        
-        setAlunosExibidos(resultado);
-
-    }, [buscaNome, buscaTurma, buscaStatus, alunosOriginais]);
-
-    const limparFiltros = () => {
-        setBuscaNome('');
-        setBuscaTurma('');
-        setBuscaStatus('todos');
-    }
+    // Função para recarregar os alunos
+    const refreshAlunos = () => {
+        handleCloseModal();
+        carregarDados();
+    };
 
     return (
         <div className="lista-container">
@@ -78,18 +100,18 @@ export const ListaAlunos: React.FC = () => {
                     <input 
                         type="text" 
                         className="form-control" 
-                        placeholder="Digite o nome..."
-                        value={buscaNome}
-                        onChange={(e) => setBuscaNome(e.target.value)}
+                        placeholder="Digite o nome..."  
+                        value={filtroNome}
+                        onChange={(e) => setFiltroNome(e.target.value)}
                     />
                 </div>
 
-                <div className="filtro-group">
+                <div className="fil tro-group">
                     <label>Turma</label>
                     <select 
                         className="form-control"
-                        value={buscaTurma}
-                        onChange={(e) => setBuscaTurma(e.target.value)}
+                        value={filtroTurma}
+                        onChange={(e) => setFiltroTurma(e.target.value)}
                     >
                         <option value="">Todas as Turmas</option>
                         {MOCK_TURMAS.map(turma => (
@@ -104,8 +126,8 @@ export const ListaAlunos: React.FC = () => {
                     <label>Status</label>
                     <select 
                         className="form-control"
-                        value={buscaStatus}
-                        onChange={(e) => setBuscaStatus(e.target.value)}
+                        value={filtroStatus}
+                        onChange={(e) => setFiltroStatus(e.target.value)}
                     >
                         <option value="todos">Todos</option>
                         <option value="ativo">Ativo</option>
@@ -130,12 +152,18 @@ export const ListaAlunos: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {alunosExibidos.length > 0 ? (
-                        alunosExibidos.map((aluno) => (
+                    {alunos.length === 0 ? (
+                        <tr>
+                            <td colSpan={5} style={{textAlign: 'center', padding: '20px'}}>
+                                Nenhum aluno cadastrado.
+                            </td>
+                        </tr>
+                    ) : (
+                        alunosFiltrados.map((aluno) => (
                             <tr key={aluno.id}>
                                 <td>{aluno.id}</td>
                                 <td>{aluno.nome}</td>
-                                <td>{aluno.nomeTurma}</td>
+                                <td>{getNomeTurma(aluno.turmaId)}</td>
                                 <td>{aluno.dataNascimento}</td>
                                 <td>
                                     {aluno.ativo ? (
@@ -154,12 +182,6 @@ export const ListaAlunos: React.FC = () => {
                                 </td>
                             </tr>
                         ))
-                    ) : (
-                        <tr>
-                            <td colSpan={6} style={{textAlign: 'center', color: '#666'}}>
-                                Nenhum aluno encontrado com esses filtros.
-                            </td>
-                        </tr>
                     )}
                 </tbody>
             </table>
@@ -167,6 +189,7 @@ export const ListaAlunos: React.FC = () => {
             <ModalNovoAluno 
                 isOpen={isModalOpen} 
                 onClose={handleCloseModal} 
+                onReload={refreshAlunos}
             />
 
         </div>
