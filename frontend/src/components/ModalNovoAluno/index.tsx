@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import './styles.css';
-import { MOCK_TURMAS } from "../../services/mockData";
-import { getTurmas, postAluno, TurmaDTO } from "../../services/api";
+import { getTurmas, TurmaDTO } from "../../services/TurmaService";
+import { AlunoRequestDTO, AlunoResponseDTO, AlunoService } from "../../services/AlunoService";
 
 interface ModalNovoAlunoProps {
     isOpen: boolean;
     onClose: () => void;
     onReload: () => void;
+    updateAluno?: AlunoResponseDTO | null;
 }
 
-export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose, onReload }) => {
+export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose, onReload, updateAluno }) => {
 
     const [nome, setNome] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
@@ -22,7 +23,17 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
         if (isOpen){
             carregarTurmas();
         }    
-    }, [isOpen]);
+
+        if (updateAluno){
+            setNome(updateAluno.nome);
+            setDataNascimento(updateAluno.dataNascimento);
+            setEndereco(updateAluno.endereco || "");
+            setTurmaId(updateAluno.turmaId);
+        } else{
+            limparFormulario();
+        }
+
+    }, [isOpen, updateAluno]);
 
     const carregarTurmas = async () => {
         try {
@@ -37,23 +48,25 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
     const handleSalvarAluno = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if(!nome || !dataNascimento || !turmaId){
-            alert("Por favor, preencha todos os campos obrigatórios.");
-            return;
-        }
+        const dadosPayload = {
+            nome,
+            dataNascimento,
+            endereco,
+            turmaId: Number(turmaId)
+        };
 
+        
         try {
-            await postAluno({
-                nome,
-                dataNascimento,
-                endereco,
-                turmaId: Number(turmaId),
-            });
-
-            alert("Aluno cadastrado com sucesso!");
+            if(updateAluno){
+                await AlunoService.update(updateAluno.id, dadosPayload);
+                alert("Aluno Atualizado Com Sucesso!");
+            }else{
+                await AlunoService.create(dadosPayload);
+                alert("Aluno Criado Com Sucesso!");
+            }
             limparFormulario();
-            onClose();
             onReload();
+        
         } catch (error) {
             console.error('Erro ao salvar aluno: ', error);
             alert("Erro ao salvar aluno. Tente novamente.");
@@ -79,7 +92,7 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
         <div className="modal-overlay">
             <div className="modal-container">
                 <div className="modal-header">
-                    <h2>Novo Aluno</h2>
+                    <h2>{updateAluno ? "Editar Aluno" : "Novo Aluno"}</h2>
                     <button className="btn-close" onClick={handleFecharModal}>X</button>
                 </div>
 

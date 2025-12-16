@@ -1,30 +1,36 @@
 import api from "./api";
-import { IAluno } from "../types/IAluno";
-import { create } from "domain";
+
+export interface AlunoResponseDTO {
+    id: number;
+    nome: string;
+    dataNascimento: string;
+    endereco?: string;
+    ativo: boolean;
+    turmaId: number;
+};
+
+export interface AlunoRequestDTO {
+    nome: string;
+    dataNascimento: string;
+    endereco?: string;
+    turmaId: number;
+}
 
 export const AlunoService = {
-
     getAll: async () => {
-        const response = await api.get<IAluno[]>("/alunos");
-        return response.data;
+        return api.get<AlunoResponseDTO[]>("/alunos");
     },
 
-    getAtivos: async () => {
-        const response = await api.get<IAluno[]>("/alunos/ativos");
-        return response.data;
+    create: async (aluno: AlunoRequestDTO) => {
+        return api.post("/alunos", aluno);
     },
 
-    create: async (aluno: IAluno) => {
-        const response = await api.post<IAluno>("/alunos", aluno);
-        return response.data;
+    update: async (id: number, aluno: AlunoRequestDTO) => {
+        return api.put(`/alunos/${id}`, aluno);
     },
 
-    update: async (aluno: IAluno) => {
-        const response = await api.put<IAluno>(`/alunos/${aluno.id}`, aluno);
-        return response.data;
-    },
-
-    delete: async (id: number) => {
-        await api.delete(`/alunos/${id}`);
+    delete: async (id: Number) => {
+        return api.delete(`/alunos/${id}`);
     }
 };
+

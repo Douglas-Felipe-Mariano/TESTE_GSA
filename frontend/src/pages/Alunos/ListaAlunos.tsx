@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { IAluno } from '../../types/IAluno';
-import { MOCK_ALUNOS, MOCK_TURMAS } from '../../services/mockData';
 import { ModalNovoAluno } from '../../components/ModalNovoAluno';
 
 import './ListaAlunos.css';
-import { AlunoResponseDTO, TurmaDTO, getAlunos, getTurmas } from '../../services/api';
-import { get } from 'http';
-import { getTTFB } from 'web-vitals';
+import { AlunoResponseDTO, AlunoService } from '../../services/AlunoService';
+import { TurmaDTO, getTurmas } from '../../services/TurmaService';
 
 export const ListaAlunos: React.FC = () => {
 
-    // Gerencia o modal, inicando a pagina com ele fechado
+    // Gerencia o modal, inicando a pagina com ele fechado e verifica se o aluno está sendo cadastrado ou criado
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [updateAluno, setUpdateAluno] = useState<AlunoResponseDTO | null>(null);
 
     // Listas populadas pela api
     const [alunos, setAlunos] = useState<AlunoResponseDTO[]>([]);
@@ -26,7 +24,7 @@ export const ListaAlunos: React.FC = () => {
     const carregarDados = async () => {
         try{
             const [responseAlunos, responseTurmas] = await Promise.all([
-                getAlunos(),
+                AlunoService.getAll(),
                 getTurmas()
             ]);
 
@@ -68,9 +66,29 @@ export const ListaAlunos: React.FC = () => {
     }
 
     // Função apra abrir o modal
-    const handleOpenModal = () => { 
+    const handleNovoAluno = () => {     
+        setIsModalOpen(true);
+        setUpdateAluno(null);
+    }
+
+    const handleUpdateAluno = (aluno: AlunoResponseDTO) => {
+        setUpdateAluno(aluno);
         setIsModalOpen(true);
     }
+
+    const handleDeleteAluno = async (id: Number) => {
+        const confirmou = window.confirm("Tem certeza que deseja excluir este aluno?")
+        if (confirmou){
+            try{
+                await AlunoService.delete(id);
+                alert ("Aluno excluido com sucesso");
+                carregarDados();
+            } catch (error) {
+                console.error("Erro ao excluir", error);
+                alert("Erro ao excluir. Verifique se o aluno não tem vínculos.");
+            }
+        }
+    };
 
     // Função para fechar o modal
     const handleCloseModal = () => { 
@@ -88,7 +106,7 @@ export const ListaAlunos: React.FC = () => {
             
             <div className="header-actions">
                 <h2>Lista de Alunos</h2>
-                <button onClick={handleOpenModal} className="btn btn-primary">
+                <button onClick={handleNovoAluno} className="btn btn-primary">
                     + Novo Aluno
                 </button>
             </div>
@@ -114,7 +132,7 @@ export const ListaAlunos: React.FC = () => {
                         onChange={(e) => setFiltroTurma(e.target.value)}
                     >
                         <option value="">Todas as Turmas</option>
-                        {MOCK_TURMAS.map(turma => (
+                        {turmas.map(turma => (
                             <option key={turma.id} value={turma.id}>
                                 {turma.descricao}
                             </option>
@@ -173,10 +191,16 @@ export const ListaAlunos: React.FC = () => {
                                     )}
                                 </td>
                                 <td>
-                                    <button className="btn btn-primary btn-sm mr-10">
+                                    <button 
+                                        className="btn btn-primary btn-sm mr-10"
+                                        onClick={() => handleUpdateAluno(aluno)}    
+                                    >
                                         Editar
                                     </button>
-                                    <button className="btn btn-danger btn-sm">
+                                    <button 
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => handleDeleteAluno(aluno.id)}
+                                    >
                                         Excluir
                                     </button>
                                 </td>
@@ -188,8 +212,9 @@ export const ListaAlunos: React.FC = () => {
 
             <ModalNovoAluno 
                 isOpen={isModalOpen} 
-                onClose={handleCloseModal} 
+                onClose={() => setIsModalOpen(false)} 
                 onReload={refreshAlunos}
+                updateAluno={updateAluno}
             />
 
         </div>
