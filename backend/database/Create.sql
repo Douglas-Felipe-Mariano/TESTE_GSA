@@ -19,4 +19,8 @@ CREATE TABLE TB_ALUNO (AlunoId         INT            PRIMARY KEY   AUTO_INCREME
                       ,CONSTRAINT FK_TURMA_ALUNO FOREIGN KEY (TurmaId) REFERENCES TB_TURMA(TurmaId)
                       );
 
+CREATE TABLE TB_USUARIO (UsuarioId      INT             PRIMARY KEY     AUTO_INCREMENT
+                        ,UsuarioNome    VARCHAR(255)    NOT NULL        UNIQUE
+                        ,UsuarioSenha   VARCHAR(255)    NOT NULL)                      
+
 CREATE INDEX IDX_NOME_ALUNO ON TB_ALUNO (Nome);                    
