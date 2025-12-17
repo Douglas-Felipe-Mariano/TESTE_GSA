@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './styles.css';
-import { getTurmas, TurmaDTO } from "../../services/TurmaService";
+import { TurmaService, TurmaDTO } from "../../services/TurmaService";
 import { AlunoRequestDTO, AlunoResponseDTO, AlunoService } from "../../services/AlunoService";
 
 interface ModalNovoAlunoProps {
@@ -37,7 +37,7 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
 
     const carregarTurmas = async () => {
         try {
-            const response = await getTurmas();
+            const response = await TurmaService.getAll();
             setListaTurmas(response.data);
         } catch (error) {
             console.error('Erro ao carregar turmas:', error);

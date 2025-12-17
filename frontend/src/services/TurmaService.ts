@@ -5,10 +5,24 @@ export interface TurmaDTO {
     descricao: string;
 };
 
-export const getTurmas = async () => {
-    return api.get<TurmaDTO[]>( '/turmas' );
-};
-
-export const postTurma = async (turma: TurmaDTO) => {
-    return api.post('/turmas', turma);
+export interface TurmaCadastroDTO {
+    descricao: string;
 }
+
+export const TurmaService = {
+    getAll: async () => {
+        return api.get<TurmaDTO[]>("/turmas");
+    },
+
+    create: async (turma: TurmaCadastroDTO) => {
+        return api.post("/turmas", turma);
+    },
+
+    update: async (id: number, turma: TurmaCadastroDTO) => {
+        return api.put(`/turmas/${id}`, turma);
+    },
+
+    delete: async (id: number) => {
+        return api.delete(`/turmas/${id}`);
+    }
+};

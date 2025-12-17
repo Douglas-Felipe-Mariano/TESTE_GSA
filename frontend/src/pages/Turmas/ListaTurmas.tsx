@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ModalNovaTurma } from '../../components/ModalNovaTurma';
 
-import './ListaAlunos.css';
-import { TurmaDTO,  getTurmas } from '../../services/TurmaService';
+import './ListaTurmas.css';
+import { TurmaDTO,  TurmaService } from '../../services/TurmaService';
 import { AlunoResponseDTO, AlunoService } from '../../services/AlunoService';
 import { count } from 'console';
 
-export const ListaAlunos: React.FC = () => {
+export const ListaTurmas: React.FC = () => {
 
-    // Gerencia o modal, inicando a pagina com ele fechado
+    // Gerencia o modal, inicando a pagina com ele fechado e verifica qual é a requisição put ou post
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [updateTurma, setUpdateTurma] = useState<TurmaDTO | null>(null);
 
     // Listas populadas pela api
     const [alunos, setAlunos] = useState<AlunoResponseDTO[]>([]);
@@ -27,7 +28,7 @@ export const ListaAlunos: React.FC = () => {
         try{
             const [responseAlunos, responseTurmas] = await Promise.all([
                 AlunoService.getAll(),
-                getTurmas()
+                TurmaService.getAll()
             ]);
 
             setAlunos(responseAlunos.data);
@@ -63,7 +64,7 @@ export const ListaAlunos: React.FC = () => {
     })
 
     const limparFiltros = () =>{
-        setFiltroTurma("");
+        setFiltroTurma(""); 
     }
 
     // Método para buscar o nome da turma, tendo em vista que o DTO de AlunoResponse do backend só retorna o id da turma, sem nome
@@ -73,8 +74,31 @@ export const ListaAlunos: React.FC = () => {
     }
 
     // Função apra abrir o modal
-    const handleOpenModal = () => { 
+    const handleNovaTurma = () => { 
+        setUpdateTurma(null);
         setIsModalOpen(true);
+    }
+
+    // Função para abrir o modal com os campos prenchidos, em caso de edição de registro
+    const handleUpdateTurma = (turma: TurmaDTO) => { 
+        setUpdateTurma(turma);
+        setIsModalOpen(true);
+    }
+
+    const handleDeleteTurma = async (id: number) => {
+        if (alunosPorTurma[id] && alunosPorTurma[id] > 0){
+            alert ("Não é possivel excluir uma turma que possui alunos matriculados!")
+            return;
+        }
+        if (window.confirm("Deseja realmente excluir está turma?"))
+            try{
+                await TurmaService.delete(id);
+                alert("Turma Excluida!");
+                carregarDados();
+            } catch (error) {
+                console.log("error");
+                alert ("Erro ao excluir!")
+            }
     }
 
     // Função para fechar o modal
@@ -85,6 +109,7 @@ export const ListaAlunos: React.FC = () => {
     // Função para recarregar os alunos
     const refreshTurma = () => {
         handleCloseModal();
+        setUpdateTurma(null);
         carregarDados();
     };
 
@@ -92,8 +117,8 @@ export const ListaAlunos: React.FC = () => {
         <div className="lista-container">
             
             <div className="header-actions">
-                <h2>Lista de Alunos</h2>
-                <button onClick={handleOpenModal} className="btn btn-primary">
+                <h2>Gerenciamento de Turmas</h2>
+                <button onClick={handleNovaTurma} className="btn btn-primary">
                     + Nova Turma
                 </button>
             </div>
@@ -126,14 +151,15 @@ export const ListaAlunos: React.FC = () => {
                     <tr>
                         <th>ID</th>
                         <th>Nome da Turma</th>
-                        <th>Quantidade de Alunos</th>
+                        <th>Qtd. de Alunos</th>
+                        <th>Açoes</th>
                     </tr>
                 </thead>
                 <tbody>
                     {turmas.length === 0 ? (
                         <tr>
-                            <td colSpan={5} style={{textAlign: 'center', padding: '20px'}}>
-                                Nenhum aluno cadastrado.
+                            <td colSpan={4} style={{textAlign: 'center', padding: '20px'}}>
+                                Nenhuma turma cadastrada.
                             </td>
                         </tr>
                     ) : (
@@ -143,10 +169,16 @@ export const ListaAlunos: React.FC = () => {
                                 <td>{turma.descricao}</td>
                                 <td>{alunosPorTurma[turma.id] || 0}</td>
                                 <td>
-                                    <button className="btn btn-primary btn-sm mr-10">
+                                    <button 
+                                        className="btn btn-primary btn-sm mr-10"
+                                        onClick={() => handleUpdateTurma(turma)}
+                                    >
                                         Editar
                                     </button>
-                                    <button className="btn btn-danger btn-sm">
+                                    <button 
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() => handleDeleteTurma(turma.id)}
+                                    >
                                         Excluir
                                     </button>
                                 </td>
@@ -158,8 +190,9 @@ export const ListaAlunos: React.FC = () => {
 
             < ModalNovaTurma
                 isOpen={isModalOpen} 
-                onClose={handleCloseModal} 
+                onClose={() => setIsModalOpen(false)} 
                 onReload={refreshTurma}
+                updateTurma={updateTurma}
             />
 
         </div>

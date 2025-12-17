@@ -3,7 +3,7 @@ import { ModalNovoAluno } from '../../components/ModalNovoAluno';
 
 import './ListaAlunos.css';
 import { AlunoResponseDTO, AlunoService } from '../../services/AlunoService';
-import { TurmaDTO, getTurmas } from '../../services/TurmaService';
+import { TurmaDTO, TurmaService } from '../../services/TurmaService';
 
 export const ListaAlunos: React.FC = () => {
 
@@ -25,7 +25,7 @@ export const ListaAlunos: React.FC = () => {
         try{
             const [responseAlunos, responseTurmas] = await Promise.all([
                 AlunoService.getAll(),
-                getTurmas()
+                TurmaService.getAll()
             ]);
 
             setAlunos(responseAlunos.data);

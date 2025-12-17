@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TurmaApplication<Turma>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.escola.Turma.TurmaApplication",
+            "projectName": "Turma",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
