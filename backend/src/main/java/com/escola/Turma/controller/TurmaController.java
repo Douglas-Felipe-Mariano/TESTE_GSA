@@ -17,14 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.escola.Turma.model.Turma;
 import com.escola.Turma.service.TurmaService;
 
-@RestController
-@RequestMapping("/api/turmas")
-@CrossOrigin(origins = "http://localhost:3000")
+@RestController //Define que é um controlador REST
+@RequestMapping("/api/turmas") //Define a rota que recebera as requisições
+@CrossOrigin(origins = "http://localhost:3000") //Configura e informa o CORS de onde viram as requisições
 public class TurmaController {
 
+     // Injeta o serviço de turmas  para gerencias turmas com regras de negócio
     @Autowired
     TurmaService turmaService;
 
+    //Método de criação de turma
     @PostMapping
     public ResponseEntity<Turma> cadastrarTurma(@RequestBody Turma turma) {
         Turma novaTurma = turmaService.cadastrarTurma(turma);
@@ -32,6 +34,7 @@ public class TurmaController {
         return ResponseEntity.ok(novaTurma);
     }
 
+    //Método de listagem de todas as turmas
     @GetMapping
     public ResponseEntity<List<Turma>> listarTurmas() {
         List<Turma> turmas = turmaService.listarTurmas();
@@ -39,14 +42,19 @@ public class TurmaController {
         return ResponseEntity.ok(turmas);
     }
 
-    @PutMapping("/{id}")
+    //Metodo de atualização das turmas
+    //@PathVariable define que a variavel sera passada no path, e é parametro essencial para a edição de uma turma
+    //@RequestBody define que a entidade deve vir do body da pagina, faz o request do json
+    @PutMapping("/{id}") //define que a rota de edição tera o id vindo da rota
     public ResponseEntity<Turma> atualizarTurma(@PathVariable Integer id, @RequestBody Turma detalheTurma) {
         Turma turmaAtualizada = turmaService.atualizarTurma(detalheTurma, id);
 
         return ResponseEntity.ok(turmaAtualizada);
     }
 
-    @DeleteMapping("/{id}")
+    //Método de deleção de turmas
+    //@PathVariable define que a variavel sera passada no path, e é parametro essencial para a edição de uma turma
+    @DeleteMapping("/{id}") //define que a rota de edição tera o id vindo da rota
     public ResponseEntity<Void> deletarTurma(@PathVariable Integer id) {
         turmaService.deletarTurma(id);
 

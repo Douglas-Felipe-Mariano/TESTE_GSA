@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import './styles.css';
 import { TurmaService, TurmaDTO } from "../../services/TurmaService";
-import { AlunoRequestDTO, AlunoResponseDTO, AlunoService } from "../../services/AlunoService";
+import { AlunoResponseDTO, AlunoService } from "../../services/AlunoService";
 
+/* Props do modal para abrir/fechar, recarregar lista e editar aluno */
 interface ModalNovoAlunoProps {
     isOpen: boolean;
     onClose: () => void;
@@ -10,15 +11,19 @@ interface ModalNovoAlunoProps {
     updateAluno?: AlunoResponseDTO | null;
 }
 
+/* Componente Modal para criar/editar aluno */
 export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose, onReload, updateAluno }) => {
 
+    // Estados do formulario
     const [nome, setNome] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [endereco, setEndereco] = useState('');
     const [turmaId, setTurmaId] = useState<number | string>('');
 
+    // Lista de turmas para select 
     const [listaTurmas, setListaTurmas] = useState<TurmaDTO[]>([]);
 
+     // Carrega turmas e dados do aluno ao abrir o modal
     useEffect(() => {
         if (isOpen){
             carregarTurmas();
@@ -35,6 +40,7 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
 
     }, [isOpen, updateAluno]);
 
+    // Busca todas as turmas da API 
     const carregarTurmas = async () => {
         try {
             const response = await TurmaService.getAll();
@@ -45,6 +51,7 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
         }
     };
 
+    // Salva ou atualiza aluno via API 
     const handleSalvarAluno = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -73,12 +80,14 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
         }
     };
 
+    // Fecha modal e limpa formulário 
     const handleFecharModal = () => {
         limparFormulario();
         onClose();
         onReload();
     }
 
+    // Limpa todos os campos do formulario
     const limparFormulario = () => {
         setNome('');
         setDataNascimento('');
@@ -86,6 +95,7 @@ export const ModalNovoAluno: React.FC<ModalNovoAlunoProps> = ({ isOpen, onClose,
         setTurmaId('');
     }
 
+    //Não renderiza o modal se estiver fechado
     if (!isOpen) return null;
 
     return (

@@ -12,9 +12,11 @@ import com.escola.Turma.repository.TurmaRepository;
 @Service
 public class TurmaService {
 
+    //Injeção de turmaRepository
     @Autowired
     TurmaRepository turmaRepository;
 
+    //Método para cadastrar turma
     public Turma cadastrarTurma(Turma turma) {
         Optional<Turma> turmaExistente = turmaRepository.findByDescricaoIgnoreCase(turma.getDescricao());
 
@@ -25,14 +27,17 @@ public class TurmaService {
         return turmaRepository.save(turma);
     }
 
+    //Método para buscar turma por id (Filtro)
     public Turma buscarTurmaPorId(Integer id) {
         return turmaRepository.findById(id).orElse(null);
     }
 
+    //Método para listar todas as turmas
     public List<Turma> listarTurmas() {
         return turmaRepository.findAll();
     }
 
+    //Método para atualizar turma
     public Turma atualizarTurma(Turma detalheTurma, Integer id) {
         Turma turmaExistente = turmaRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("Turma não encontrada."));
@@ -48,6 +53,7 @@ public class TurmaService {
         return turmaRepository.save(turmaExistente);
     }
 
+    //Método para deletar turma, realizando delete real no banco de dados.
     public void deletarTurma(Integer id) {
         Turma turmaExistente = turmaRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("Turma não encontrada."));

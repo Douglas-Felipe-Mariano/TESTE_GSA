@@ -1,17 +1,20 @@
+/* Overlay do modal
+   Escurece o fundo e centraliza o conteúdo */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6); 
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
-    justify-content: center; 
-    align-items: center;     
-    z-index: 1000; 
-    backdrop-filter: blur(2px); 
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
 }
 
+/* Container principal do modal */
 .modal-container {
     background-color: #ffffff;
     width: 100%;
@@ -22,9 +25,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 16px; 
+    gap: 16px;
 }
 
+/* Cabeçalho do modal */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -34,12 +38,14 @@
     margin-bottom: 10px;
 }
 
+/* Título do modal */
 .modal-header h2 {
     margin: 0;
     font-size: 1.5rem;
     color: #333;
 }
 
+/* Botão de fechar o modal */
 .btn-close {
     background: transparent;
     border: none;
@@ -50,10 +56,12 @@
     line-height: 1;
 }
 
+/* Hover do botão de fechar */
 .btn-close:hover {
     color: #7e1e1e;
 }
 
+/* Agrupamento dos campos do formulário */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -61,12 +69,14 @@
     margin-bottom: 12px;
 }
 
+/* Rótulo dos campos do formulário */
 .form-group label {
     font-size: 0.9rem;
     font-weight: 600;
     color: #555;
 }
 
+/* Campos de entrada do formulário */
 .form-group input,
 .form-group select {
     padding: 10px;
@@ -79,21 +89,25 @@
     box-sizing: border-box;
 }
 
+/* Destaque visual ao focar o campo */
 .form-group input:focus,
 .form-group select:focus {
     border-color: #007bff;
 }
 
+/* Linha para organizar campos lado a lado */
 .form-row {
     display: flex;
     gap: 16px;
     justify-content: space-between;
 }
 
+/* Campo ocupando metade da largura */
 .form-group.half-width {
     flex: 1;
 }
 
+/* Rodapé do modal */
 .modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -103,6 +117,7 @@
     border-top: 1px solid #eee;
 }
 
+/* Botão de cancelar */
 .btn-cancel {
     padding: 10px 20px;
     background-color: #f8f9fa;
@@ -113,10 +128,12 @@
     font-weight: 500;
 }
 
+/* Hover do botão de cancelar */
 .btn-cancel:hover {
     background-color: #e2e6ea;
 }
 
+/* Botão de salvar */
 .btn-save {
     padding: 10px 20px;
     background-color: #28a745;
@@ -128,6 +145,7 @@
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
+/* Hover do botão de salvar */
 .btn-save:hover {
     background-color: #218838;
 }

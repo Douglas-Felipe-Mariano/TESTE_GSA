@@ -12,6 +12,7 @@ public record AlunoRequestDTO(
     Integer turmaId
 ) {
 
+//Converte do dto para entidade, util para POST e PUT já que o back recebe o dto mas vai salvar uma entidade
         public Aluno toEntity(Turma turma) {
         Aluno aluno = new Aluno();
         aluno.setNome(this.nome());

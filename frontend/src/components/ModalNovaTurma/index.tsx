@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import './styles.css';
 import { TurmaDTO, TurmaService } from "../../services/TurmaService";
 
+/* Props do modal para abrir/fechar, recarregar lista e editar aluno */
 interface ModalNovaTurmaProps {
     isOpen: boolean;
     onClose: () => void;
@@ -9,10 +10,13 @@ interface ModalNovaTurmaProps {
     updateTurma?: TurmaDTO | null; 
 }
 
+/* Componente Modal para criar/editar turma */
 export const ModalNovaTurma: React.FC<ModalNovaTurmaProps> = ({ isOpen, onClose, onReload, updateTurma }) => {
 
+    //Estado do formulario
     const [descricao, setDescricao] = useState('');
     
+    //Carrega os dados das turma ao abrir o modal para edição ou abre vazio para inclusão
     useEffect(() => {
         if(isOpen) {
             if(updateTurma) {
@@ -23,6 +27,7 @@ export const ModalNovaTurma: React.FC<ModalNovaTurmaProps> = ({ isOpen, onClose,
         }
     }, [isOpen, updateTurma])
 
+    //Salva ou atualiza turma via API
     const handleSalvarTurma = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -46,16 +51,19 @@ export const ModalNovaTurma: React.FC<ModalNovaTurmaProps> = ({ isOpen, onClose,
         }
     };
 
+    //Fecha o modal e limpa o formulario
     const handleFecharModal = () => {
         limparFormulario();
         onClose();
         onReload();
     }
 
+    //Limpa todos os campos do formulario
     const limparFormulario = () => {
         setDescricao('');
     }
 
+    //Não renderiza o modal se estiver fechado
     if (!isOpen) return null;
 
     return (

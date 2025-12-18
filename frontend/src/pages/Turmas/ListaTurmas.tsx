@@ -4,26 +4,25 @@ import { ModalNovaTurma } from '../../components/ModalNovaTurma';
 import './ListaTurmas.css';
 import { TurmaDTO,  TurmaService } from '../../services/TurmaService';
 import { AlunoResponseDTO, AlunoService } from '../../services/AlunoService';
-import { count } from 'console';
 
 export const ListaTurmas: React.FC = () => {
 
-    // Gerencia o modal, inicando a pagina com ele fechado e verifica qual é a requisição put ou post
+    // Estado do modal e verificação se é create ou update
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [updateTurma, setUpdateTurma] = useState<TurmaDTO | null>(null);
 
-    // Listas populadas pela api
+    // Listas populadas pela api    
     const [alunos, setAlunos] = useState<AlunoResponseDTO[]>([]);
     const [turmas, setTurmas] = useState<TurmaDTO[]>([]);
 
-    // Armazena a quantidade de alunos por turma
+    // Armazena a quantidade de alunos por turma, usando o id da turma como chave
     const [alunosPorTurma, setAlunosPorTurma] = useState<{[key:number] : number}>({});
 
-    // Filtros
+    // Estados de filtros
     const [filtroTurma, setFiltroTurma] = useState("");
     
 
-    // função de busca dos dados na api
+    // carrega os dados
     const carregarDados = async () => {
         try{
             const [responseAlunos, responseTurmas] = await Promise.all([
@@ -34,12 +33,14 @@ export const ListaTurmas: React.FC = () => {
             setAlunos(responseAlunos.data);
             setTurmas(responseTurmas.data);
 
+            //Atualiza a contagem de alunos por turma
             contarAlunosPorTurma(responseAlunos.data, responseTurmas.data);
         } catch (error) {
             console.error("Erro ao carregar dados:", error);
         }
     };
 
+    //Conta quantos alunos existem em cada turma
     const contarAlunosPorTurma = (alunos: AlunoResponseDTO[], turmas: TurmaDTO[]) => {
         const contador: {[key: number]: number} = {};
 
@@ -57,34 +58,31 @@ export const ListaTurmas: React.FC = () => {
     }, []);
 
     const turmaFiltrada = turmas.filter((turmas) => {
-        // Filtro por turma
+        // Aplica o filtro caso haja seleção
         const turmaMatch = filtroTurma === "" || String(turmas.id) === filtroTurma;
 
         return turmaMatch;
     })
 
+    //limpa os filtros
     const limparFiltros = () =>{
         setFiltroTurma(""); 
     }
 
-    // Método para buscar o nome da turma, tendo em vista que o DTO de AlunoResponse do backend só retorna o id da turma, sem nome
-    const getNomeTurma = (id: number) => {
-        const turmaencontrada = turmas.find(t => t.id === id);
-        return turmaencontrada ? turmaencontrada.descricao : 'Turma não Encontrada';
-    }
 
-    // Função apra abrir o modal
+    // Função apra abrir o modal para criação de nova turma
     const handleNovaTurma = () => { 
         setUpdateTurma(null);
         setIsModalOpen(true);
     }
 
-    // Função para abrir o modal com os campos prenchidos, em caso de edição de registro
+    // Abre o modal para edição de uma turma, preenchendo os dados existentes
     const handleUpdateTurma = (turma: TurmaDTO) => { 
         setUpdateTurma(turma);
         setIsModalOpen(true);
     }
 
+    // Exclui uma turma, validando se há alunos matriculados
     const handleDeleteTurma = async (id: number) => {
         if (alunosPorTurma[id] && alunosPorTurma[id] > 0){
             alert ("Não é possivel excluir uma turma que possui alunos matriculados!")
@@ -101,12 +99,12 @@ export const ListaTurmas: React.FC = () => {
             }
     }
 
-    // Função para fechar o modal
+    // Fecha para fechar o modal
     const handleCloseModal = () => { 
         setIsModalOpen(false);
     }
 
-    // Função para recarregar os alunos
+    // Atualiza a listagem de alunos
     const refreshTurma = () => {
         handleCloseModal();
         setUpdateTurma(null);

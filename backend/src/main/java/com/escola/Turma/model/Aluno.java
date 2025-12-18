@@ -11,17 +11,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "TB_ALUNO")
+
+@Entity //Declaramos que é uma entidade (Tabela)
+@Table(name = "TB_ALUNO") //Explicitamos que é uma tabela e seu nome (Obrigatorio pelo JPA)
 public class Aluno {
 
-    @Id 
+    @Id //Informa que o campo é um ID
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Define que o ID será gerado automaticamente pelo banco de dados
-    @Column(name = "AlunoId", nullable = false)
+    @Column(name = "AlunoId", nullable = false)         // Informa que o campo refere-se a uma coluna da tabela
     private Integer id;
 
     @ManyToOne //Define que muitos alunos podem ter uma turma
-    @JoinColumn(name = "TurmaId", nullable = false)
+    @JoinColumn(name = "TurmaId", nullable = false) // Efetua o join de relacionamento
     private Turma turma;
 
     @Column(name = "Nome", nullable = false, length = 255)
