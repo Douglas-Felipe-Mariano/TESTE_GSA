@@ -4,6 +4,7 @@ import { AuthService } from "../../services/AuthService";
 import './Login.css';
 
 export const Login: React.FC = () => {
+    
     const navigate = useNavigate();
 
     //Parametros de entrada
@@ -20,7 +21,8 @@ export const Login: React.FC = () => {
         setCarregando(true);
 
         try{
-            const response = await AuthService.login({usuario, senha});
+            //Tenta fazer o login
+            const response = await AuthService.login({usuario ,senha});
 
             //salva o token JWT vindo do backend
             const {token} = response.data;
@@ -31,10 +33,10 @@ export const Login: React.FC = () => {
 
         } catch (error: any) {
             console.error(error);
-            if (error.response?.status === 403 || error.reponse?.status === 401){
+            if (error.response?.status === 403 || error.response?.status === 401){
                 setErro("Usuario ou Senha Incorretos.")
             } else {
-                setErro("Erroa ao conectar com o servidor. Tente mais tarde")
+                setErro("Erro ao conectar com o servidor. Tente novamente mais tarde")
             }
         } finally {
             setCarregando(false);
@@ -46,7 +48,7 @@ export const Login: React.FC = () => {
             <div className="login-card">
                 <h2>Login</h2>
 
-                {erro && <div className="error-massage">{erro}</div>}
+                {erro && <div className="error-message">{erro}</div>}
 
                 <form onSubmit={handleLogin}>
                     <div className="form-group">

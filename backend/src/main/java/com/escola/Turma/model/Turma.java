@@ -7,14 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "TB_TURMA")
+@Entity //Declaramos que é uma entidade (Tabela)
+@Table(name = "TB_TURMA") //Explicitamos que é uma tabela e seu nome (Obrigatorio pelo JPA)
 public class Turma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Define que o ID será gerado automaticamente pelo banco de dados
-    @Column(name = "Turma_id", nullable = false)
-    private Integer id;
+    @Column(name = "Turma_id", nullable = false)        // Informa que o campo refere-se a uma coluna da tabela
+    private Integer id;                                 // Atributo convencional da classe java.
 
     @Column(name = "Descricao", nullable = false, length = 255, unique = true)
     private String descricao;

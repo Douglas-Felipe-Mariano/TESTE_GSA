@@ -12,10 +12,10 @@ import java.util.List;
 @Table(name = "TB_USUARIO")
 public class Usuario implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UsuarioId")
-    private Integer id;
+    @Id //Informa que o campo é um ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //Define que o ID será gerado automaticamente pelo banco de dados
+    @Column(name = "UsuarioId")                         // Informa que o campo refere-se a uma coluna da tabela
+    private Integer id;                                 // Atributo convencional da classe java.
 
     @Column(name = "UsusarioNome", length = 255, unique = true, nullable = false)
     private String userName;

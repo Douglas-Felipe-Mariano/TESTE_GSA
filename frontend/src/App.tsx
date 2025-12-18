@@ -6,14 +6,17 @@ import { ListaTurmas } from './pages/Turmas/ListaTurmas';
 import { Login } from './pages/Login/Login';
 import { AuthService } from './services/AuthService';
 
+//menu no header da pagina para navegação entre as rotas 
 const LayoutMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  //inicia a aplicação na tela de login
   if (location.pathname === '/login' || location.pathname === "/"){
     return null;
   }
 
+  //Método de Logout
   const handleLogout = () => {
     AuthService.logout();
     navigate('/login');
@@ -33,7 +36,7 @@ const LayoutMenu = () => {
     );
 }
 
-
+//Raiz do app react, apenas chamas as paginas 
 function App() {
   return (
     <BrowserRouter>

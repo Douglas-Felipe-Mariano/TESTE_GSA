@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import com.escola.Turma.model.Aluno;
 
+//Utilizado record para tornar implicita a presença de getters e setters
+//Dto de resposta para requisições relacionada a aluno que tenham retorno
 public record AlunoResponseDTO(
     Integer id,
     String nome,
@@ -13,6 +15,8 @@ public record AlunoResponseDTO(
     String nomeTurma,
     Integer turmaId
 ) 
+
+//Converte da entidade para dto, util para metodos GET, passando apenas dados essenciais para o frontend.
 {
     public static AlunoResponseDTO fromEntity(Aluno aluno) {
         return new AlunoResponseDTO(

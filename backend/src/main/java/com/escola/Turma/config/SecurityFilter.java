@@ -35,18 +35,22 @@ public class SecurityFilter extends OncePerRequestFilter{
             
             //se existir token valida
             if (token != null){
-                //Pega o username atravéz do token
-                var login = tokenService.getSubject(token);
-
-                //Valida se o usuario existe no banco
-                UserDetails user = usuarioRepository.findByUserName(login).orElse(null);
-
-                //se existir usuario faz a autenticação
-                if (user != null){
-                    //Cria a autenticação para o spring security
-                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                try {
+                    //Pega o username atravéz do token
+                    var login = tokenService.getSubject(token);
+    
+                    //Valida se o usuario existe no banco
+                    UserDetails user = usuarioRepository.findByUserName(login).orElse(null);
+    
+                    //se existir usuario faz a autenticação
+                    if (user != null){
+                        //Cria a autenticação para o spring security
+                        var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Token Invalido Ignorado " + ex.getMessage());
                 }
             }
 

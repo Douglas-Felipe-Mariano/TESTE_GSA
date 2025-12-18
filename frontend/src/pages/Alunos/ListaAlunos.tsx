@@ -7,7 +7,7 @@ import { TurmaDTO, TurmaService } from '../../services/TurmaService';
 
 export const ListaAlunos: React.FC = () => {
 
-    // Gerencia o modal, inicando a pagina com ele fechado e verifica se o aluno está sendo cadastrado ou criado
+    // Estado do modal e verificação se é create ou update
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [updateAluno, setUpdateAluno] = useState<AlunoResponseDTO | null>(null);
 
@@ -15,12 +15,12 @@ export const ListaAlunos: React.FC = () => {
     const [alunos, setAlunos] = useState<AlunoResponseDTO[]>([]);
     const [turmas, setTurmas] = useState<TurmaDTO[]>([]);
 
-    // Filtros
+    // Estados de Filtros
     const [filtroNome, setFiltroNome] = useState("");
     const [filtroTurma, setFiltroTurma] = useState("");
     const [filtroStatus, setFiltroStatus] = useState("");   
 
-    // função de busca dos dados na api
+    // Carrega os alunos e as turmas 
     const carregarDados = async () => {
         try{
             const [responseAlunos, responseTurmas] = await Promise.all([
@@ -35,11 +35,12 @@ export const ListaAlunos: React.FC = () => {
         }
     };
 
-    // Garante que os dados sejam carregados assim que a pagina é aberta
+    // Carrega os dados assim que a pagina é aberta
     useEffect (() => {
         carregarDados();
     }, []);
 
+    //Filtra os alunos conforme os campos de busca
     const alunosFiltrados = alunos.filter((aluno) => {
         // Filtro por nome
         const nomeMatch = aluno.nome.toLowerCase().includes(filtroNome.toLowerCase());
@@ -53,29 +54,32 @@ export const ListaAlunos: React.FC = () => {
         return nomeMatch && turmaMatch && statusMatch;
     })
 
+    //limpa todos os filtros
     const limparFiltros = () =>{
         setFiltroNome("");
         setFiltroStatus("");
         setFiltroTurma("");
     }
 
-    // Método para buscar o nome da turma, tendo em vista que o DTO de AlunoResponse do backend só retorna o id da turma, sem nome
+    // retorna o nome da turma a partir do id
     const getNomeTurma = (id: number) => {
         const turmaencontrada = turmas.find(t => t.id === id);
         return turmaencontrada ? turmaencontrada.descricao : 'Turma não Encontrada';
     }
 
-    // Função apra abrir o modal
+    // Abre o modal para criar novo aluno
     const handleNovoAluno = () => {     
         setIsModalOpen(true);
         setUpdateAluno(null);
     }
 
+    // Abre o modal para editar aluno, com dados ja carregados
     const handleUpdateAluno = (aluno: AlunoResponseDTO) => {
         setUpdateAluno(aluno);
         setIsModalOpen(true);
     }
 
+    //exclui aluno 
     const handleDeleteAluno = async (id: Number) => {
         const confirmou = window.confirm("Tem certeza que deseja excluir este aluno?")
         if (confirmou){
@@ -90,12 +94,12 @@ export const ListaAlunos: React.FC = () => {
         }
     };
 
-    // Função para fechar o modal
+    // Fechar o modal
     const handleCloseModal = () => { 
         setIsModalOpen(false);
     }
 
-    // Função para recarregar os alunos
+    // Recarrega a lista de alunos
     const refreshAlunos = () => {
         handleCloseModal();
         carregarDados();

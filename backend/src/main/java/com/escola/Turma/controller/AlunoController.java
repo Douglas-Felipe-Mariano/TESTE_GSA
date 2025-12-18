@@ -18,14 +18,16 @@ import com.escola.Turma.dto.AlunoRequestDTO;
 import com.escola.Turma.dto.AlunoResponseDTO;
 import com.escola.Turma.service.AlunoService;
 
-@RestController
-@RequestMapping("/api/alunos")
-@CrossOrigin(origins = "http://localhost:3000")
+@RestController //Define que é um controlador REST
+@RequestMapping("/api/alunos") //Define a rota que recebera as requisições
+@CrossOrigin(origins = "http://localhost:3000") //Configura e informa o CORS de onde viram as requisições
 public class AlunoController {
 
+     // Injeta o serviço de alunos  para gerencias alunos com regras de negócio
     @Autowired
     AlunoService alunoService;
 
+    //Método de Criação de aluno
     @PostMapping
     public ResponseEntity<AlunoResponseDTO> cadastrarAluno(@RequestBody AlunoRequestDTO aluno) {
         AlunoResponseDTO novoAluno = alunoService.cadastrarAluno(aluno);
@@ -33,6 +35,7 @@ public class AlunoController {
         return ResponseEntity.ok(novoAluno);
     }
 
+    //Método de listagem apenas dos alunos ativos
     @GetMapping("/ativos")
     public ResponseEntity<List<AlunoResponseDTO>> listarAlunosAtivos() {
         List<AlunoResponseDTO> alunosAtivos = alunoService.listarAlunosAtivos();
@@ -40,6 +43,7 @@ public class AlunoController {
         return ResponseEntity.ok(alunosAtivos);
     }
 
+    //Método de listagem de todos os alunos
     @GetMapping
     public ResponseEntity<List<AlunoResponseDTO>> listarTodosAlunos() {
         List<AlunoResponseDTO> alunos = alunoService.listarTodosAlunos();
@@ -47,6 +51,9 @@ public class AlunoController {
         return ResponseEntity.ok(alunos);
     }
 
+    //Metodo de atualização das alunos
+    //@PathVariable define que a variavel sera passada no path, e é parametro essencial para a edição de uma turma
+    //@RequestBody define que a entidade deve vir do body da pagina, faz o request do json
     @PutMapping("/{id}")
     public ResponseEntity<AlunoResponseDTO> atualizarAluno(@PathVariable Integer id, @RequestBody AlunoRequestDTO detalheAluno) {
         AlunoResponseDTO alunoAtualizado = alunoService.atualizarAluno(detalheAluno, id);
@@ -54,6 +61,8 @@ public class AlunoController {
         return ResponseEntity.ok(alunoAtualizado);
     }
 
+     //Método de deleção de Alunos, que realiza soft delete, apenas inativa
+    //@PathVariable define que a variavel sera passada no path, e é parametro essencial para a edição de uma turma
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarAluno(@PathVariable Integer id) {
         alunoService.deletarAluno(id);

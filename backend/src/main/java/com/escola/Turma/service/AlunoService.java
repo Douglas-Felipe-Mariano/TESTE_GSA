@@ -16,12 +16,14 @@ import com.escola.Turma.repository.TurmaRepository;
 @Service
 public class AlunoService {
 
+    //Autoinstancia os repositories
     @Autowired
     private AlunoRepository alunoRepository;
 
     @Autowired
     private TurmaRepository TurmaRepository;    
 
+    //Método para cadastrar aluno
     public AlunoResponseDTO cadastrarAluno(AlunoRequestDTO alunoDTO) {
 
         if (alunoDTO.nome() == null || alunoDTO.nome().isEmpty()) {
@@ -46,10 +48,12 @@ public class AlunoService {
         return AlunoResponseDTO.fromEntity(aluno);
     }
 
+    //Método para listar aluno por nome (Filtro)
     public List<Aluno> listarAlunosPorNome(String nome) {
         return alunoRepository.findByNomeAndAtivo(nome, true);
     }
 
+    //Método para listar apenas os alunos ativo (Pensando em escalabilidade, caso os alunos inativos não devam aparecer)
     public List<AlunoResponseDTO> listarAlunosAtivos() {
         return alunoRepository.findByAtivo(true)
                               .stream()
@@ -57,6 +61,7 @@ public class AlunoService {
                               .collect(java.util.stream.Collectors.toList());
     }
 
+    //Método para listar todos os alunos
     public List<AlunoResponseDTO> listarTodosAlunos() {
         return alunoRepository.findAll()
                               .stream()
@@ -64,6 +69,7 @@ public class AlunoService {
                               .collect(java.util.stream.Collectors.toList());
     }
 
+    //Método para atualizar o aluno
     public AlunoResponseDTO atualizarAluno(AlunoRequestDTO detalheAluno, Integer id) {
         Aluno alunoExistente = alunoRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
@@ -96,6 +102,7 @@ public class AlunoService {
         return AlunoResponseDTO.fromEntity(alunoExistente);
     }
 
+    //Método para deletar o aluno, soft delet, apenas inativa
     public void deletarAluno(Integer id) {
         Aluno alunoExistente = alunoRepository.findById(id)
                                               .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));

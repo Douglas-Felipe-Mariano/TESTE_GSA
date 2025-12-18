@@ -1,9 +1,13 @@
+/* Container principal da página
+   Centraliza o conteúdo e limita a largura máxima */
 .lista-container {
     padding: 20px;
     max-width: 1000px;
     margin: 0 auto;
 }
 
+/* Cabeçalho com título e botão de ação
+   Usa flex para alinhar e espaçar os elementos */
 .header-actions {
     display: flex;
     justify-content: space-between;
@@ -11,25 +15,31 @@
     margin-bottom: 20px;
 }
 
+/* Estilo para status ativo */
 .status-ativo {
     color: var(--sucess-color);
     font-weight: bold;
 }
 
+/* Estilo para status inativo */
 .status-inativo {
     color: var(--danger-color);
     font-weight: bold;
 }
 
+/* Botão em tamanho reduzido (usado em ações da tabela) */
 .btn-sm {
     padding: 6px 12px;
     font-size: 14px;
 }
 
+/* Margem à direita para espaçamento entre botões */
 .mr-10 {
     margin-right: 10px;
 }
 
+/* Container dos filtros
+   Layout flexível e responsivo */
 .filtros-container {
     display: flex;
     gap: 15px;
@@ -41,18 +51,21 @@
     flex-wrap: wrap;
 }
 
-.filtro-group{
+/* Agrupamento dos campos de filtro */
+.filtro-group {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
+/* Estilo do label dos filtros */
 .filtro-group label {
     font-size: 14px;
     font-weight: 600;
     color: var(--secondary-color);
 }
 
+/* Estilo padrão dos campos de formulário */
 .form-control {
     padding: 8px 12px;
     border: 1px solid #cdb5e1;
@@ -61,8 +74,8 @@
     min-width: 200px;
 }
 
-.form-control:focus{
+/* Destaque visual ao focar o campo */
+.form-control:focus {
     outline: none;
     border-color: var(--primary-color);
 }
-
